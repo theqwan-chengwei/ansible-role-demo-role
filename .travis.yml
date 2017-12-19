@@ -1,0 +1,13 @@
+
+sudo: true
+services:
+  - docker
+
+script:
+  - docker run --name vm-ubuntu14 -d -p 10021:22 chusiang/ansible-managed-node:ubuntu-14.04
+  - docker run --name vm-centos6 -d -p 10022:22 chusiang/ansible-managed-node:centos-6
+  - docker run --name vm-ubuntu16 -d -p 10023:22 chusiang/ansible-managed-node:ubuntu-16.04
+  - docker run --name vm-centos7 -d -p 10024:22 chusiang/ansible-managed-node:centos-7
+  - ls
+  - docker ps
+  
