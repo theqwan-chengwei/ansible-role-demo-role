@@ -17,12 +17,21 @@ script:
   # Run tests.
   - ${PWD}/tests/test.sh
 
+
+  # test
+  - docker ps
+  - env
+  - 'docker exec ${container_id} ls /usr/bin/htop | grep "/usr/bin/htop"'
+
+
+
+
   # Setup test site.
-  - 'docker exec ${container_id} mkdir -p /var/www/test'
-  - 'docker exec ${container_id} bash -c "echo Success >| /var/www/test/index.html"'
+  # - 'docker exec ${container_id} mkdir -p /var/www/test'
+  # - 'docker exec ${container_id} bash -c "echo Success >| /var/www/test/index.html"'
 
   # Make sure virtualhost exists.
-  - 'docker exec --tty ${container_id} env TERM=xterm curl http://test.dev/ | grep "Success"'
+  # - 'docker exec --tty ${container_id} env TERM=xterm curl http://test.dev/ | grep "Success"'
 
 # notifications:
   # webhooks: https://galaxy.ansible.com/api/v1/notifications/
