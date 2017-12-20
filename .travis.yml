@@ -22,6 +22,7 @@ script:
   - docker ps
   - env
   - 'docker exec ${container_id} ls /usr/bin/htop | grep "/usr/bin/htop"'
+  - 'docker exec ${container_id} ls /usr/bin/iftop | grep "/usr/bin/iftop"'
 
 
 
