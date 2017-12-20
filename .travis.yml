@@ -1,21 +1,51 @@
+---
+services: docker
 
-sudo: true
-services:
-  - docker
+env:
+  - distro: centos6
+  - distro: ubuntu1404
 
 script:
-  - docker run --name vm-ubuntu14 -d -p 10021:22 chusiang/ansible-managed-node:ubuntu-14.04
-  - docker run --name vm-centos6 -d -p 10022:22 chusiang/ansible-managed-node:centos-6
-  - docker run --name vm-ubuntu16 -d -p 10023:22 chusiang/ansible-managed-node:ubuntu-16.04
-  - docker run --name vm-centos7 -d -p 10024:22 chusiang/ansible-managed-node:centos-7
-  - ls
-  - docker ps
+  # Configure test script so we can run extra tests after playbook is run.
+  - export container_id=$(date +%s)
+  - export cleanup=false
 
-  - docker exec vm-ubuntu14 ps ax
-  - docker exec vm-centos6 ps ax
+  # Download test shim.
+  - wget -O ${PWD}/tests/test.sh https://gist.githubusercontent.com/geerlingguy/73ef1e5ee45d8694570f334be385e181/raw/
+  - chmod +x ${PWD}/tests/test.sh
 
-  - yes | pip install ansible
-  - ansible --version
+  # Run tests.
+  - ${PWD}/tests/test.sh
 
-notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  # Setup test site.
+  - 'docker exec ${container_id} mkdir -p /var/www/test'
+  - 'docker exec ${container_id} bash -c "echo Success >| /var/www/test/index.html"'
+
+  # Make sure virtualhost exists.
+  - 'docker exec --tty ${container_id} env TERM=xterm curl http://test.dev/ | grep "Success"'
+
+# notifications:
+  # webhooks: https://galaxy.ansible.com/api/v1/notifications/
+
+
+#
+# sudo: true
+# services:
+#   - docker
+#
+# script:
+#   - docker run --name vm-ubuntu14 -d -p 10021:22 chusiang/ansible-managed-node:ubuntu-14.04
+#   - docker run --name vm-centos6 -d -p 10022:22 chusiang/ansible-managed-node:centos-6
+#   - docker run --name vm-ubuntu16 -d -p 10023:22 chusiang/ansible-managed-node:ubuntu-16.04
+#   - docker run --name vm-centos7 -d -p 10024:22 chusiang/ansible-managed-node:centos-7
+#   - ls
+#   - docker ps
+#
+#   - docker exec vm-ubuntu14 ps ax
+#   - docker exec vm-centos6 ps ax
+#
+#   - yes | pip install ansible
+#   - ansible --version
+#
+# notifications:
+#   webhooks: https://galaxy.ansible.com/api/v1/notifications/
