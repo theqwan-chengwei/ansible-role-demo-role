@@ -2,7 +2,7 @@
 services: docker
 
 env:
-  # - distro: centos6
+  - distro: centos6
   - distro: ubuntu1404
 
 script:
@@ -17,12 +17,11 @@ script:
   # Run tests.
   - ${PWD}/tests/test.sh
 
-
-  # test
+  # ypur test code
   - docker ps
   - env
   - 'docker exec ${container_id} ls /usr/bin/htop | grep "/usr/bin/htop"'
-  - 'docker exec ${container_id} ls /usr/bin/iftop | grep "/usr/bin/iftop"'
+
 
 
 
